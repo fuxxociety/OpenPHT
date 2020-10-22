@@ -474,9 +474,9 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     }
     else
     {
-      int gnAG = AG_LoadGIF(fullPath.c_str(), NULL, 0);
+      int gnAG = AG_LoadGIF(fullPath.c_str(), NULL, 0,NULL);
       AG_Frame* gpAG = new AG_Frame[gnAG];
-      AG_LoadGIF(fullPath.c_str(), gpAG, gnAG);
+      AG_LoadGIF(fullPath.c_str(), gpAG, gnAG,NULL);
 
       printf("%s\n", output.c_str());
       bool skip=false;
