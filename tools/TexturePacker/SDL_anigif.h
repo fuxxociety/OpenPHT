@@ -21,8 +21,8 @@
 #ifndef _SDL_ANIGIF_H
 #define _SDL_ANIGIF_H
 
-#include <SDL/SDL.h>
-#include <SDL/begin_code.h>
+#include "SDL.h"
+#include <SDL2/begin_code.h>
 #ifdef __cplusplus
 	extern "C" {
 #endif
@@ -46,17 +46,17 @@ typedef struct
 
 
 extern DECLSPEC int		AG_isGIF( SDL_RWops* src );
-extern DECLSPEC int		AG_LoadGIF( const char* file, AG_Frame* frames, int maxFrames );
+extern DECLSPEC int		AG_LoadGIF( const char* file, AG_Frame* frames, int maxFrames, int *loop );
 extern DECLSPEC void	AG_FreeSurfaces( AG_Frame* frames, int nFrames );
 extern DECLSPEC int		AG_ConvertSurfacesToDisplayFormat( AG_Frame* frames, int nFrames );
 extern DECLSPEC int		AG_NormalizeSurfacesToDisplayFormat( AG_Frame* frames, int nFrames );
-extern DECLSPEC int		AG_LoadGIF_RW( SDL_RWops* src, AG_Frame* frames, int size );
+extern DECLSPEC int		AG_LoadGIF_RW( SDL_RWops* src, AG_Frame* frames, int size, int *loop );
 
 
 
 #ifdef __cplusplus
 	}
 #endif
-#include <SDL/close_code.h>
+#include <SDL2/close_code.h>
 
 #endif /* _SDL_ANIGIF_H */

@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "SDL_anigif.h"
 
 
@@ -80,6 +81,7 @@ typedef struct
 {
 	/* global data */
 	SDL_RWops*		src;
+	int			loop;
 	gifscreen		gs;
 	gif89			g89;
 	int				zerodatablock;
@@ -140,7 +142,7 @@ int AG_isGIF( SDL_RWops* src )
 /*--------------------------------------------------------------------------*
  *
  *--------------------------------------------------------------------------*/
-int AG_LoadGIF( const char* file, AG_Frame* frames, int size )
+int AG_LoadGIF( const char* file, AG_Frame* frames, int size, int *loop )
 {
 	int n = 0;
 
@@ -148,7 +150,7 @@ int AG_LoadGIF( const char* file, AG_Frame* frames, int size )
 
 	if ( src )
 	{
-		n = AG_LoadGIF_RW( src, frames, size );
+		n = AG_LoadGIF_RW( src, frames, size, loop );
 		SDL_RWclose( src );
 	}
 
@@ -177,8 +179,6 @@ void AG_FreeSurfaces( AG_Frame* frames, int nFrames )
 	}
 }
 
-
-
 /*--------------------------------------------------------------------------*
  *
  *--------------------------------------------------------------------------*/
@@ -193,8 +193,15 @@ int AG_ConvertSurfacesToDisplayFormat( AG_Frame* frames, int nFrames )
 		{
 			if ( frames[i].surface )
 			{
+#if SDL_VERSION_ATLEAST(2,0,0)
+				SDL_Surface* surface;
+				if (SDL_GetColorKey(frames[i].surface, NULL) == 0)
+					surface = SDL_DisplayFormatAlpha(frames[i].surface);
+				else
+					surface = SDL_DisplayFormat(frames[i].surface);
+#else
 				SDL_Surface* surface = (frames[i].surface->flags & SDL_SRCCOLORKEY) ? SDL_DisplayFormatAlpha(frames[i].surface) : SDL_DisplayFormat(frames[i].surface);
-
+#endif
 				if ( surface )
 				{
 					SDL_FreeSurface( frames[i].surface );
@@ -219,9 +226,20 @@ int AG_NormalizeSurfacesToDisplayFormat( AG_Frame* frames, int nFrames )
 
 	if ( nFrames > 0 && frames && frames[0].surface )
 	{
+#if SDL_VERSION_ATLEAST(2,0,0)
+		SDL_Surface* mainSurface;
+		int newDispose;
+		if (SDL_GetColorKey(frames[0].surface, NULL) == 0) {
+			mainSurface = SDL_DisplayFormatAlpha(frames[0].surface);
+			newDispose = AG_DISPOSE_RESTORE_BACKGROUND;
+		} else {
+			mainSurface = SDL_DisplayFormat(frames[0].surface);
+			newDispose = AG_DISPOSE_NONE;
+		}
+#else
 		SDL_Surface* mainSurface = (frames[0].surface->flags & SDL_SRCCOLORKEY) ? SDL_DisplayFormatAlpha(frames[0].surface) : SDL_DisplayFormat(frames[0].surface);
 		const int newDispose = (frames[0].surface->flags & SDL_SRCCOLORKEY) ? AG_DISPOSE_RESTORE_BACKGROUND : AG_DISPOSE_NONE;
-
+#endif
 		if ( mainSurface )
 		{
 			int i;
@@ -275,7 +293,7 @@ int AG_NormalizeSurfacesToDisplayFormat( AG_Frame* frames, int nFrames )
 /*--------------------------------------------------------------------------*
  *
  *--------------------------------------------------------------------------*/
-int AG_LoadGIF_RW( SDL_RWops* src, AG_Frame* frames, int maxFrames )
+int AG_LoadGIF_RW( SDL_RWops* src, AG_Frame* frames, int maxFrames, int *loop )
 {
 	int start;
 	unsigned char buf[16];
@@ -293,7 +311,7 @@ int AG_LoadGIF_RW( SDL_RWops* src, AG_Frame* frames, int maxFrames )
 	gd = (gifdata*)malloc( sizeof(*gd) );
 	memset( gd, 0, sizeof(*gd) );
 	gd->src = src;
-
+	gd->loop = 1;
 	start = SDL_RWtell( src );
 
 	if ( !SDL_RWread(src,buf,6,1) )
@@ -398,8 +416,11 @@ int AG_LoadGIF_RW( SDL_RWops* src, AG_Frame* frames, int maxFrames )
 				goto done;
 
 			if ( gd->g89.transparent >= 0 )
+#if SDL_VERSION_ATLEAST(2,0,0)
+				SDL_SetColorKey( image, SDL_TRUE, gd->g89.transparent );
+#else
 				SDL_SetColorKey( image, SDL_SRCCOLORKEY, gd->g89.transparent );
-
+#endif
 			frames[iFrame].surface	= image;
 			frames[iFrame].x		= LM_to_uint(buf[0], buf[1]);
 			frames[iFrame].y		= LM_to_uint(buf[2], buf[3]);
@@ -414,7 +435,8 @@ int AG_LoadGIF_RW( SDL_RWops* src, AG_Frame* frames, int maxFrames )
 done:
 	if ( image == NULL )
 		SDL_RWseek( src, start, SEEK_SET );
-
+	if (loop)
+		*loop = gd->loop;
 	free( gd );
 
 	return iFrame;
@@ -465,6 +487,15 @@ static int DoExtension( gifdata* gd, int label )
 		break;
 
 	  case 0xff:		/* Application Extension */
+	  	if (GetDataBlock( gd, buf ) != 11)
+			break;
+		if (strncmp((char*)buf, "NETSCAPE2.0", 11))
+			break;
+		if (GetDataBlock( gd, buf ) != 3)
+			break;
+		if (buf[0] != 1)
+			break;
+		gd->loop = (unsigned int)buf[1] | (((unsigned int)buf[2]) << 8);
 		break;
 
 	  case 0xfe:		/* Comment Extension */
@@ -721,7 +752,7 @@ static SDL_Surface* ReadImage( gifdata* gd, int len, int height, int cmapSize, u
 		return NULL;
 	}
 
-	image = SDL_AllocSurface( SDL_SWSURFACE, len, height, 8, 0, 0, 0, 0 );
+	image = SDL_CreateRGBSurface( SDL_SWSURFACE, len, height, 8, 0, 0, 0, 0 );
 
 	for ( i = 0; i < cmapSize; i++ )
 	{

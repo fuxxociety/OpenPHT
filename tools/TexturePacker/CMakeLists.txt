@@ -17,8 +17,8 @@ if(OPENELEC)
 
   add_subdirectory(${root}/lib/libsquish ${CMAKE_CURRENT_BINARY_DIR}/libsquish)
 
-  plex_find_package(SDL 1 1)
-  plex_find_package(SDL_image 1 1)
+  plex_find_package(SDL2 1 1)
+  plex_find_package(SDL2_image 1 1)
   plex_find_package(Lzo2 1 1)
 endif(OPENELEC)
 
