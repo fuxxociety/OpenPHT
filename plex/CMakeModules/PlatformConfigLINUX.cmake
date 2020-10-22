@@ -12,7 +12,7 @@ option(USE_INTERNAL_FFMPEG "Use internal FFmpeg?" ON)
 
 set(LINK_PKG
   Freetype
-  SDL
+  SDL2
   OpenGL
   ZLIB
   JPEG
@@ -39,7 +39,7 @@ set(LINK_PKG
 )
 
 if(NOT OPENELEC)
-  list(APPEND LINK_PKG SDL_image)
+  list(APPEND LINK_PKG SDL2_image)
 endif()
 
 if(NOT USE_INTERNAL_FFMPEG)
