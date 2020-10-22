@@ -22,8 +22,8 @@
 #include <sys/types.h>
 #include <squish.h>
 #include <string>
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include "SDL.h"
+#include "SDL_image.h"
 #include "cmdlineargs.h"
 #ifdef _WIN32
 #define strncasecmp strnicmp

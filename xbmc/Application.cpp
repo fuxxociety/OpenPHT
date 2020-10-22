@@ -114,7 +114,7 @@
 #include "input/MouseStat.h"
 
 #ifdef HAS_SDL
-#include <SDL/SDL.h>
+#include "SDL.h"
 #endif
 
 #if defined(FILESYSTEM) && !defined(_LINUX)

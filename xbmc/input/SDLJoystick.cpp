@@ -27,7 +27,7 @@
 #include <math.h>
 
 #ifdef HAS_SDL_JOYSTICK
-#include <SDL/SDL.h>
+#include "SDL.h"
 
 using namespace std;
 

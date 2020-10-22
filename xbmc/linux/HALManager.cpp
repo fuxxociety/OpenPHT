@@ -31,8 +31,8 @@
 #include "dialogs/GUIDialogKaiToast.h"
 
 #ifdef HAS_SDL_JOYSTICK
-#include <SDL/SDL.h>
-#include <SDL/SDL_version.h>
+#include "SDL.h"
+#include "SDL_version.h"
 #include "input/SDLJoystick.h"
 #endif
 
