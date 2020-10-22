@@ -51,8 +51,8 @@ endif(TARGET_WIN32)
 add_definitions(-DUSE_LZO_PACKING)
 add_executable(TexturePacker ${SRC})
 target_link_libraries(TexturePacker
-  ${CONFIG_LIBRARY_SDL_IMAGE}
-  ${CONFIG_LIBRARY_SDL}
+  ${CONFIG_LIBRARY_SDL2_IMAGE}
+  ${SDL2_LIBRARY}
   ${CONFIG_LIBRARY_STDC++}
   lib_squish
 )
