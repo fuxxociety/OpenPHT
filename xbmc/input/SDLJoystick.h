@@ -36,8 +36,8 @@
 
 #ifdef HAS_SDL_JOYSTICK
 
-#include <SDL/SDL_joystick.h>
-#include <SDL/SDL_events.h>
+#include "SDL_joystick.h"
+#include "SDL_events.h"
 
 #define MAX_AXES 64
 #define MAX_AXISAMOUNT 32768
