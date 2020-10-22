@@ -199,7 +199,9 @@ int AG_ConvertSurfacesToDisplayFormat( AG_Frame* frames, int nFrames )
 					surface = SDL_DisplayFormatAlpha(frames[i].surface); */
 					return NULL;
 				else
-					surface = SDL_ConvertSurfaceFormat(frames[i].surface);
+/* Too few arguments to function, and I don't know enough about SDL to fix properly
+					surface = SDL_ConvertSurfaceFormat(frames[i].surface); */
+					return NULL;
 				if ( surface )
 				{
 					SDL_FreeSurface( frames[i].surface );
@@ -229,11 +231,13 @@ int AG_NormalizeSurfacesToDisplayFormat( AG_Frame* frames, int nFrames )
 		if (SDL_GetColorKey(frames[0].surface, NULL) == 0) {
 /* SDL_DisplayFormatAlpha doesnt exist in SDL2.0
 			mainSurface = SDL_DisplayFormatAlpha(frames[0].surface);
-			newDispose = AG_DISPOSE_RESTORE_BACKGROUND;*/
+			newDispose = AG_DISPOSE_RESTORE_BACKGROUND; */
 			return NULL;
 		} else {
+/* Too few arguments to function, and I don't know enough about SDL to fix properly
 			mainSurface = SDL_ConvertSurfaceFormat(frames[0].surface);
-			newDispose = AG_DISPOSE_NONE;
+			newDispose = AG_DISPOSE_NONE; */
+			return NULL;
 		}
 		if ( mainSurface )
 		{
