@@ -1,8 +1,8 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2012 Team XBMC
- *      http://www.xbmc.org
+ *      Copyright (C) 2005-2013 Team XBMC
+ *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,11 @@
  *
  */
 
-#if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
+#if defined(HAVE_CONFIG_H)
 #include "config.h"
+#endif
+
+#if !defined(TARGET_WINDOWS)
 #define DECLARE_UNUSED(a,b) a __attribute__((unused)) b;
 #endif
 
@@ -29,21 +32,20 @@
  * All platforms
  *****************/
 #define HAS_DVD_SWSCALE
-#define HAS_DVDPLAYER
+#define HAS_VideoPlayer
 #define HAS_EVENT_SERVER
-//#define HAS_KARAOKE
 #define HAS_SCREENSAVER
 //#define HAS_PYTHON
-#define HAS_SYSINFO
 #define HAS_VIDEO_PLAYBACK
 #define HAS_VISUALISATION
-#ifndef __PLEX__
+#if !defined(__PLEX__)
 #define HAS_PVRCLIENTS
 #endif
+#define HAS_ADSPADDONS
 
 #ifdef HAVE_LIBMICROHTTPD
 #define HAS_WEB_SERVER
-#ifndef __PLEX__
+#if !defined(__PLEX__)
 #define HAS_WEB_INTERFACE
 #endif
 #endif
@@ -56,10 +58,6 @@
 
 #define HAS_FILESYSTEM
 #define HAS_FILESYSTEM_CDDA
-//#define HAS_FILESYSTEM_RTV
-//#define HAS_FILESYSTEM_DAAP
-//#define HAS_FILESYSTEM_SAP
-//#define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 
 #ifdef HAVE_LIBSMBCLIENT
@@ -75,11 +73,11 @@
 #endif
 
 #ifdef HAVE_LIBPLIST
-  //#define HAS_AIRPLAY
+//  #define HAS_AIRPLAY
 #endif
 
 #if defined(HAVE_LIBSHAIRPORT) || defined(HAVE_LIBSHAIRPLAY)
-  //#define HAS_AIRTUNES
+  #define HAS_AIRTUNES
 #endif
 
 #ifdef HAVE_MYSQL
@@ -90,17 +88,24 @@
   #define HAS_UPNP
 #endif
 
+#if defined(HAVE_LIBMDNSEMBEDDED)
+  #define HAS_ZEROCONF
+  #define HAS_MDNS
+  #define HAS_MDNS_EMBEDDED
+#endif
+
 /**********************
  * Non-free Components
  **********************/
 
-#if defined(TARGET_WINDOWS)
-  //#define HAS_FILESYSTEM_RAR
+#if defined(HAVE_XBMC_NONFREE)
+//  #define HAS_FILESYSTEM_RAR
 #else
   #if defined(HAVE_XBMC_NONFREE)
     //#define HAS_FILESYSTEM_RAR
   #endif
 #endif
+
 
 /*****************
  * Win32 Specific
@@ -108,7 +113,7 @@
 
 #if defined(TARGET_WINDOWS)
 #define HAS_SDL_JOYSTICK
-#ifndef __PLEX__
+#if !defined(__PLEX__)
 #define HAS_DVD_DRIVE
 #endif
 #define HAS_WIN32_NETWORK
@@ -116,27 +121,28 @@
 #define HAS_AUDIO
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
-#ifndef __PLEX__
+#if !defined(__PLEX__)
 #define HAVE_LIBSSH
 #endif
 #define HAS_LIBRTMP
-#ifndef __PLEX__
+#if !defined(__PLEX__)
 #define HAVE_LIBBLURAY
 #endif
 #define HAS_ASAP_CODEC
 #define HAVE_YAJL_YAJL_VERSION_H
-#ifndef __PLEX__
+#if !defined(__PLEX__)
 #define HAS_FILESYSTEM_SMB
 #define HAS_FILESYSTEM_NFS
 #endif
 #define HAS_ZEROCONF
-#ifndef __PLEX__
+#define HAS_MDNS
+#if !defined(__PLEX__)
 #define HAS_AIRPLAY
 #define HAS_AIRTUNES
 #endif
 #define HAVE_LIBSHAIRPLAY
 #define HAVE_LIBCEC
-#ifndef __PLEX__
+#if !defined(__PLEX__)
 #define HAVE_LIBMP3LAME
 #define HAVE_LIBVORBISENC
 #define HAS_MYSQL
@@ -186,7 +192,7 @@
 #endif
 #ifdef HAVE_SDL
 #define HAS_SDL
-#ifndef HAS_SDL_OPENGL
+#if !defined(HAS_SDL_OPENGL)
 #define HAS_SDL_OPENGL
 #endif
 #ifndef HAVE_X11
@@ -212,6 +218,13 @@
 
 #ifdef HAVE_LIBSSH
 #define HAS_FILESYSTEM_SFTP
+#endif
+
+#if defined(HAVE_X11)
+#define HAS_EGL
+#if !defined(HAVE_LIBGLESV2)
+#define HAS_GLX
+#endif
 #endif
 
 /*****************
@@ -241,13 +254,16 @@
 #undef GetFreeSpace
 #include "PlatformInclude.h"
 #ifdef HAS_DX
-#include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
-#include "D3DX9.h"  // or the reference video clock.
+#include "d3d9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
+#include "d3d11_1.h"
+#include "dxgi.h"
+#include "d3dcompiler.h"
+#include "directxmath.h"
 #else
 #include <d3d9types.h>
 #endif
 #ifdef HAS_SDL
-#include "SDL\SDL.h"
+#include "SDL.h"
 #endif
 #endif
 
@@ -290,7 +306,7 @@
 #endif
 
 #ifdef HAS_DVD_DRIVE
-#ifndef __PLEX__
+#if !defined(__PLEX__)
 #define HAS_CDDA_RIPPER
 #endif
 #endif
@@ -304,6 +320,7 @@
 #define GET_R(color)            ((color >> 16) & 0xFF)
 #define GET_G(color)            ((color >>  8) & 0xFF)
 #define GET_B(color)            ((color >>  0) & 0xFF)
+
 /* PLEX */
 #if defined(TARGET_RASPBERRY_PI)
   #undef HAS_SDL_JOYSTICK
