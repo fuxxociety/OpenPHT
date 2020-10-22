@@ -83,7 +83,7 @@
 #if defined(__gl_h_) || defined(__GL_H__)
 #error gl.h included before glew.h
 #endif
-#if defined(__glext_h_) || defined(__GLEXT_H_)
+#if defined(__glext_h_) || defined(__GLEXT_H_) || defined(__gl_glext_h_)
 #error glext.h included before glew.h
 #endif
 #if defined(__gl_ATI_h_)
@@ -92,8 +92,8 @@
 
 #define __gl_h_
 #define __GL_H__
-#define __glext_h_
 #define __GLEXT_H_
+#define __gl_glext_h_
 #define __gl_ATI_h_
 
 #if defined(_WIN32)
