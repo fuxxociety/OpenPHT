@@ -70,7 +70,8 @@ if(SQLite3_FOUND)
   set(HAVE_SQLITE3 1)
  endif()
 
-find_package(Boost COMPONENTS thread system timer REQUIRED)
+find_package(Boost REQUIRED COMPONENTS
+		thread system timer)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
   list(APPEND CONFIG_PLEX_LINK_LIBRARIES ${Boost_LIBRARIES})
