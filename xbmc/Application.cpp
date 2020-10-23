@@ -242,7 +242,7 @@
 #include "DatabaseManager.h"
 
 #ifdef _LINUX
-#include "XHandle.h"
+#include "linux/XHandle.h"
 #endif
 
 #include "cores/FFmpeg.h"
