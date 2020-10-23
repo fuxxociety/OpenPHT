@@ -28,17 +28,17 @@
     #define GL_GLEXT_PROTOTYPES
   #endif
   #if defined(TARGET_WINDOWS)
+    #include <GL/glew.h>
     #include <GL/gl.h>
     #include <GL/glu.h>
   #elif defined(TARGET_LINUX)
-    #include <GL/gl.h>
-    #include <GL/glu.h>
-    #include <GL/glext.h>
+    #include <GL/glew.h>
   #elif defined(TARGET_FREEBSD)
+    #include <GL/glew.h>
     #include <GL/gl.h>
   #elif defined(TARGET_DARWIN)
+    #include <GL/glew.h>
     #include <OpenGL/gl.h>
-    #include <OpenGL/glu.h>
     #include <OpenGL/glext.h>
   #endif
 #elif HAS_GLES == 2
