@@ -33,6 +33,8 @@
     #include <GL/glu.h>
   #elif defined(TARGET_LINUX)
     #include <GL/glew.h>
+    #include <GL/gl.h>
+//    #include <GL/glext.h>
   #elif defined(TARGET_FREEBSD)
     #include <GL/glew.h>
     #include <GL/gl.h>

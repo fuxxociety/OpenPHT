@@ -182,7 +182,7 @@ if(ENABLE_DUMP_SYMBOLS)
   add_custom_target(symbols DEPENDS ${PLEX_TARGET_NAME}_symbols)
 endif(ENABLE_DUMP_SYMBOLS)
 
-target_link_libraries(${PLEX_TARGET_NAME} xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
+target_link_libraries(${PLEX_TARGET_NAME} xbmc sqlite3 ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
 if(TARGET_WIN32)
   add_custom_command(
